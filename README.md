@@ -12,27 +12,139 @@ Stubble can be imported as a subproject in Xcode or as a .framework. If imported
 
 In the build settings for your Test target, under `OtherLinkerFlags` add `-ObjC` and `-all_load`.
 
-Creating a Mock
+Mocking
 ------
 
-    mock([ClassToMock class]);
+Mocking a class
+    
+    mock([ClassToMock class])
+    or
+    mock(ClassToMock.class)
 
-### Note with ESCObserver
-If you are using ESCObserver, you'll want to do this to your mock objects:
+Mocking a protocol
+    
+    mock(@protocol(ProtocolToMock))
 
-    ClassToMock<ESCObserverInternal> *mockClass;
+Resetting a mock
 
-Creating a stub
+    resetMock(MockedObject)
+
+#### Note with ESCObserver
+If you are using ESCObserver, you'll want to do this to your mock objects
+
+    ClassToMock<ESCObserverInternal> *mockClass
+
+Stubbing
 ------
 
-    [when([ClassToMock methodToStub] thenReturn:@"string")];
+Stubbing method calls on a mock
 
-### Note with ESCObserver
-You can do something like this:
+    [when([MockedObject methodToStub]) thenReturn:@"string"]
+    or 
+    (for BOOL)
+    [when([MockedObject isFireflyTheBestScienceFictionShowEver]) thenReturn:@YES]
+    or 
+    (for NSInteger)
+    [when([MockedObject getInteger]) thenReturn:@1337]
 
-    [mockObject.escNotifier notificationMethod];
+#### Note with ESCObserver
+You can do something like this
 
-Verifying calls
+    [mockObject.escNotifier notificationMethod]
+
+Verifying
 ------
 
-    verifyCalled([ClassToMock methodToStub]);
+Verify method called on mack
+
+    verifyCalled([MockedObject methodToStub])
+    or
+    verify([MockedObject methodToStub])
+
+Verify method never called
+    
+    verifyNever([MockedObject methodToStub])
+    or
+    verifyTimes(never(), [MockedObject methodToStub])
+
+Verify method called a number of times
+
+    verifyTimes(times(#), [MockedObject methodToStub])
+
+Verify method called at least a number of times
+
+    verifyTimes(atLeast(#), [MockedObject methodToStub])
+
+Verify method called at least once (equivalent to verifyCalled([MockedObject methodToStub]))
+
+    verifyTimes(atLeastOnce(), [MockedObject methodToStub])
+
+Verify method called a number of times within limits
+
+    verifyTimes(between(#,#), [MockedObject methodToStub])
+
+Verify method called only once (equivalent to verifyTimes(times(1), [MockedObject methodToStub]))
+
+    verifyTimes(once(), [MockedObject methodToStub])
+    
+Verify methods called in order
+
+    SBLOrderToken *orderToken = orderToken();
+    verifyInOrder(orderToken, [MockedObjectA methodToStub]);
+    verifyInOrder(orderToken, [MockedObjectB methodToStub])
+    
+    verifyTimesInOrder(timesMatcher, orderToken, [MockedObject methodToStub])
+    
+Verify no interactions with a mock
+
+    verifyNoInteractions(MockedObject)
+
+Times Matchers
+------
+
+A number of times
+
+    times(times)
+
+At least a number of times
+
+    atLeast(times)
+
+Never
+    
+    never()
+
+Once
+    
+    once()
+
+At least once
+    
+    atLeastOnce()
+
+Between
+
+    between(atLeast, atMost)
+
+Argument Matchers
+------
+
+Any
+
+    any()
+    or
+    any(BOOL)
+    or 
+    any(NSInteger)
+
+Capturing Arguments
+------
+
+Capture
+
+    capture(CaptorReference)
+
+For example
+
+    NSString *element1Id = nil;
+    verifyCalled([mockObject integerParameter:capture(&element1Id)]);
