@@ -29,10 +29,11 @@ Resetting a mock
 
     resetMock(MockedObject)
 
-#### Note with ESCObserver
-If you are using ESCObserver, you'll want to do this to your mock objects
+#### Note with ESCObservable
+If you are using ESCObservable and intend to fire events from your mock object, you'll need to declare your mock objects as
 
-    ClassToMock<ESCObserverInternal> *mockClass
+    ClassToMock<ESCObservableInternal> *mockObject = mock(ClassToMock);
+    [mockObject escRegisterObserverProtocol:@protocol(ClassToMockObserver)];
 
 Stubbing
 ------
@@ -47,7 +48,7 @@ Stubbing method calls on a mock
     (for NSInteger)
     [when([MockedObject getInteger]) thenReturn:@1337]
 
-#### Note with ESCObserver
+#### Note with ESCObservable
 You can do something like this
 
     [mockObject.escNotifier notificationMethod]
@@ -91,7 +92,7 @@ Verify methods called in order
 
     SBLOrderToken *orderToken = orderToken();
     verifyInOrder(orderToken, [MockedObjectA methodToStub]);
-    verifyInOrder(orderToken, [MockedObjectB methodToStub])
+    verifyInOrder(orderToken, [MockedObjectB methodToStub]);
     
     verifyTimesInOrder(timesMatcher, orderToken, [MockedObject methodToStub])
     
