@@ -56,7 +56,7 @@ You can do something like this
 Verifying
 ------
 
-Verify method called on mack
+Verify method called on mock
 
     verifyCalled([MockedObject methodToStub])
     or
